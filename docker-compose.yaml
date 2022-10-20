@@ -2,7 +2,7 @@ services:
   jenkins:
     image: custom-jenkins-docker:latest
     hostname: jenkins-container
-    restart: always
+    restart: on-failure
     privileged: true
     user: root
     ports:
