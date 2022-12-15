@@ -1,11 +1,4 @@
 # docker-in-jenkins-docker
-## Build Custom Docker Image
-```
-mkdir -p jenkins_home
-docker image build -t custom-jenkins-docker .
-```
-
-## Run Jenkins Docker
 ```
 docker compose up -d
 ```
