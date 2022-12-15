@@ -10,4 +10,4 @@ docker compose logs
 Note: Copy Jenkins password and go.
 
 ## Browse to Jenkins console
-Go to: http://localhost:8080 and follow setting wizard.
+Go to: http://localhost:8089 and follow setting wizard.
