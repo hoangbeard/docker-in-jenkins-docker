@@ -1,5 +1,6 @@
 # docker-in-jenkins-docker
 ```
+mkdir -p jenkins_home
 docker compose up -d
 ```
 Get Jenkins Password
