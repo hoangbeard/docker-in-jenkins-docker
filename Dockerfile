@@ -1,9 +1,5 @@
 FROM jenkins/jenkins:lts
 USER root
-
-# Copy Fortigate Root CA for verify access to Internet
-COPY ./Fortinet_CA_SSL.crt /usr/local/share/ca-certificates/
-RUN update-ca-certificates
 RUN apt-get update -qq \
     && apt-get install -qqy apt-transport-https ca-certificates time curl gnupg lsb-release software-properties-common
 RUN mkdir -p /etc/apt/keyrings \
