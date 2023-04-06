@@ -1,0 +1,85 @@
+jenkins:
+  systemMessage: "Jenkins Lab\n\n"
+  agentProtocols:
+    - "JNLP4-connect"
+  slaveAgentPort: 50000
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: true
+  disableRememberMe: true
+  labelAtoms:
+    - name: "no-use-this-node"
+    - name: "built-in"
+  labelString: "no-use-this-node"
+  mode: NORMAL
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: ${JENKINS_ADMIN_ID}
+          password: ${JENKINS_ADMIN_PASSWORD}
+          name: "Jenkins Admin"
+          properties:
+            - timezone:
+                timeZoneName: "Asia/Saigon"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - assignments:
+              - ${JENKINS_ADMIN_ID}
+              - "sysops-admins"
+            name: "Administrators"
+            pattern: ".*"
+            permissions:
+              - "Overall/Administer"
+          - assignments:
+              - "dev"
+              - "developers"
+            name: "Developers"
+            pattern: ".*"
+            permissions:
+              - "Overall/Read"
+              - "Job/Cancel"
+              - "Job/Build"
+              - "SCM/Tag"
+              - "Job/Read"
+              - "Job/Workspace"
+              - "View/Read"
+          - name: "ReadOnlyAccess"
+            pattern: ".*"
+            permissions:
+              - "Overall/Read"
+  projectNamingStrategy:
+    roleBased:
+      forceExistingJobs: false
+security:
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "acceptFirstConnectionStrategy"
+  queueItemAuthenticator:
+    authenticators:
+      - global:
+          strategy: "triggeringUsersAuthorizationStrategy"
+unclassified:
+  location:
+    url: ${JENKINS_URL}
+  scheduleBuild:
+    defaultScheduleTime: "10:00:00 PM"
+    timeZone: "Asia/Saigon"
+  buildDiscarders:
+    configuredBuildDiscarders:
+      - "jobBuildDiscarder"
+      - simpleBuildDiscarder:
+          discarder:
+            logRotator:
+              numToKeepStr: "15"
+  timestamper:
+    allPipelines: true
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '."
+    systemTimeFormat: "yyyy-MMM-dd hh:mm:ss a zzz' | '."
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"
