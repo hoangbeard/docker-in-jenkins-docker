@@ -3,7 +3,7 @@
 ## Create an environment variables file by rename .env.sample to .env in root folder
 
 ```shell
-mv .env.sample .env
+cp .env.sample .env
 
 ```
 

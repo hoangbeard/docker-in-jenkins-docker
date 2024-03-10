@@ -1,7 +1,7 @@
 jenkins:
-  systemMessage: "Jenkins Lab\n\n"
   agentProtocols:
     - "JNLP4-connect"
+    - "Ping"
   slaveAgentPort: 50000
   crumbIssuer:
     standard:
@@ -16,6 +16,7 @@ jenkins:
   securityRealm:
     local:
       allowsSignup: false
+      enableCaptcha: false
       users:
         - id: ${JENKINS_ADMIN_ID}
           password: ${JENKINS_ADMIN_PASSWORD}
@@ -27,40 +28,18 @@ jenkins:
     roleBased:
       roles:
         global:
-          - assignments:
-              - ${JENKINS_ADMIN_ID}
-              - "sysops-admins"
-            name: "Administrators"
-            pattern: ".*"
-            permissions:
-              - "Overall/Administer"
-          - assignments:
-              - "dev"
-              - "developers"
-            name: "Developers"
-            pattern: ".*"
-            permissions:
-              - "Overall/Read"
-              - "Job/Cancel"
-              - "Job/Build"
-              - "SCM/Tag"
-              - "Job/Read"
-              - "Job/Workspace"
-              - "View/Read"
-          - name: "ReadOnlyAccess"
-            pattern: ".*"
-            permissions:
-              - "Overall/Read"
+        - entries:
+          - user: ${JENKINS_ADMIN_ID}
+          name: "Administrators"
+          pattern: ".*"
+          permissions:
+          - "Overall/Administer"
   projectNamingStrategy:
     roleBased:
-      forceExistingJobs: false
+      forceExistingJobs: true
 security:
   gitHostKeyVerificationConfiguration:
     sshHostKeyVerificationStrategy: "acceptFirstConnectionStrategy"
-  queueItemAuthenticator:
-    authenticators:
-      - global:
-          strategy: "triggeringUsersAuthorizationStrategy"
 unclassified:
   location:
     url: ${JENKINS_URL}
@@ -83,3 +62,6 @@ tool:
     installations:
       - home: "git"
         name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"

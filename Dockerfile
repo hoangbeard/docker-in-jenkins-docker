@@ -1,9 +1,11 @@
-FROM jenkins/jenkins:lts-jdk11
+FROM jenkins/jenkins:lts-jdk17
 
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false -Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Saigon
 ENV CASC_JENKINS_CONFIG /var/jenkins_home/jcasc.yaml
-COPY --chown=jenkins:jenkins jcasc.yaml /usr/share/jenkins/ref/jcasc.yaml
-COPY --chown=jenkins:jenkins plugins.txt /usr/share/jenkins/ref/plugins.txt
+
+COPY initialConfig.groovy /usr/share/jenkins/ref/init.groovy.d/initialConfigs.groovy
+COPY jcasc.yaml /usr/share/jenkins/ref/jcasc.yaml
+COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 
 USER root
