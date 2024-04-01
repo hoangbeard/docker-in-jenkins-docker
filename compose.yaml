@@ -1,14 +1,14 @@
 version: "3.9"
 services:
   jenkins:
+    container_name: jenkins
+    hostname: jenkins-container
+    image: jenkins-custom
+    build: .
     environment:
       - JENKINS_URL=${JENKINS_URL}
       - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID}
       - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
-    build: .
-    image: jenkins-custom
-    hostname: jenkins-container
-    container_name: jenkins
     restart: unless-stopped
     privileged: true
     user: root

@@ -1,24 +1,38 @@
 # Running a Jenkins in Docker with Configuration as Code
 
-## Create an environment variables file by rename .env.sample to .env in root folder
+## How to use it?
 
-```shell
-cp .env.sample .env
+1. Create an environment variables file for docker-compose by renaming .env.sample to .env in the root folder. Modify the username and password that you want.
 
-```
+    ```shell
+    cp .env.sample .env
+    ```
 
-## Create a folder for jenkins_home (as known jenkins data)
+2. Run container in background and print container ID
 
-```shell
-mkdir -p jenkins_home
-```
+    ```shell
+    docker compose up -d
+    ```
 
-## Run docker compose
+3. Access to Jenkins console
 
-```shell
-docker compose up -d
-```
+    http://localhost:8089
 
-## Browse to Jenkins console
+        Default credential in .env
+        Username: admin
+        Password: password
 
-> Go to: http://localhost:8089
+## How to clean up?
+
+1. Clean docker compose
+
+    ```shell
+    docker compose down --volumes
+    ```
+
+2. Remove jenkins data.
+    **Notice: Skip this step if you want to keep the jenkins data**
+
+    ```shell
+    rm -rf jenkins_home
+    ```

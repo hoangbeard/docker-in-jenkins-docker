@@ -57,11 +57,3 @@ unclassified:
     allPipelines: true
     elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '."
     systemTimeFormat: "yyyy-MMM-dd hh:mm:ss a zzz' | '."
-tool:
-  git:
-    installations:
-      - home: "git"
-        name: "Default"
-  mavenGlobalConfig:
-    globalSettingsProvider: "standard"
-    settingsProvider: "standard"
