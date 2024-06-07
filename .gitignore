@@ -1,2 +1,8 @@
 jenkins_home/
+grafana/data/
+prometheus/data/
+sonarqube/data/
+sonarqube/logs/
+sonarqube/extensions/
+sonarqube/postgresql/data/
 .env

@@ -2,21 +2,35 @@
 
 ## How to use it?
 
-1. Create an environment variables file for docker-compose by renaming .env.sample to .env in the root folder. Modify the username and password that you want.
+1. Clone this repository to internal
+
+	By SSH
+
+	```shell
+	git clone git@github.com:hoangbeard/docker-in-jenkins-docker.git
+	```
+
+	Or by HTTPS
+
+	```shell
+	git clone https://github.com/hoangbeard/docker-in-jenkins-docker.git
+	```
+
+2. Create an environment variables file for docker-compose by renaming .env.sample to .env in the root folder. Modify the username and password that you want.
 
     ```shell
     cp .env.sample .env
     ```
 
-2. Run container in background and print container ID
+3. Run container in background and print container ID
 
     ```shell
     docker compose up -d
     ```
 
-3. Access to Jenkins console
+4. Access to Jenkins console
 
-    http://localhost:8089
+    http://localhost:8080
 
         Default credential in .env
         Username: admin

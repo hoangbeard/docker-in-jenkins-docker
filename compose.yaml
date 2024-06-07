@@ -1,20 +1,117 @@
-version: "3.9"
 services:
   jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: jenkins
     hostname: jenkins-container
     image: jenkins-custom
-    build: .
     environment:
       - JENKINS_URL=${JENKINS_URL}
       - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID}
       - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
     restart: unless-stopped
     privileged: true
-    user: root
+    user: '0'
     ports:
-      - "8089:8080"
+      - "8080:8080"
       - "50000:50000"
     volumes:
       - ./jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+
+  prometheus:
+    container_name: prometheus
+    hostname: prometheus-container
+    image: prom/prometheus
+    restart: unless-stopped
+    user: '0'
+    links:
+      - "jenkins"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/configs:/etc/prometheus
+      - ./prometheus/data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  grafana:
+    container_name: grafana
+    hostname: grafana-container
+    image: grafana/grafana
+    restart: unless-stopped
+    user: '0'
+    links:
+      - "prometheus"
+    environment:
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+
+  # Jaeger
+  jaeger-all-in-one:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    restart: always
+    ports:
+      - "16686:16686"
+      - "14268"
+      - "14250"
+
+  # Zipkin
+  zipkin-all-in-one:
+    container_name: zipkin
+    image: openzipkin/zipkin:latest
+    environment:
+      - JAVA_OPTS=-Xms1024m -Xmx1024m -XX:+ExitOnOutOfMemoryError
+    restart: always
+    ports:
+      - "9411:9411"
+
+  # Collector
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector-contrib:latest
+    restart: always
+    command: ["--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}"]
+    volumes:
+      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector
+      - "8889:8889"   # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317"   # OTLP gRPC receiver
+      - "55679:55679" # zpages extension
+    depends_on:
+      - jaeger-all-in-one
+      - zipkin-all-in-one
+
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:lts-community
+    depends_on:
+      - db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - ./sonarqube/data:/opt/sonarqube/data
+      - ./sonarqube/extensions:/opt/sonarqube/extensions
+      - ./sonarqube/logs:/opt/sonarqube/logs
+    ports:
+      - "9000:9000"
+  db:
+    container_name: sonarqube-db
+    image: postgres:12
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - ./sonarqube/postgresql:/var/lib/postgresql
+      - ./sonarqube/postgresql/data:/var/lib/postgresql/data
