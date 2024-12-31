@@ -14,7 +14,7 @@ RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 
 USER root
 
-ADD --chmod=644 https://download.docker.com/linux/debian/gpg /etc/apt/keyrings/docker.gpg
+ADD --chmod=644 https://download.docker.com/linux/debian/gpg /etc/apt/keyrings/docker.asc
 
 RUN set -eux; \
     apt-get update; \
@@ -28,8 +28,9 @@ RUN set -eux; \
         time \
     ; \
     echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-    $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+        $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" | \
+        tee /etc/apt/sources.list.d/docker.list > /dev/null \
     ; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
