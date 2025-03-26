@@ -8,10 +8,6 @@ LABEL maintainer="HoangBeard <hoangbeard@gmail.com>"
 ENV JAVA_OPTS='-Djenkins.install.runSetupWizard=false'
 ENV CASC_JENKINS_CONFIG='/usr/share/jenkins/ref/jcasc.yaml'
 
-COPY config/. /usr/share/jenkins/ref/
-
-RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
-
 USER root
 
 ADD --chmod=644 https://download.docker.com/linux/debian/gpg /etc/apt/keyrings/docker.asc
@@ -42,5 +38,9 @@ RUN set -eux; \
     ; \
     apt-get -y clean; \
     rm -rf /var/lib/apt/lists/*
+
+COPY config/. /usr/share/jenkins/ref/
+
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 
 USER jenkins

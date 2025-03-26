@@ -1,7 +1,4 @@
 jenkins:
-  agentProtocols:
-    - "JNLP4-connect"
-    - "Ping"
   slaveAgentPort: 50000
   crumbIssuer:
     standard:
@@ -28,12 +25,12 @@ jenkins:
     roleBased:
       roles:
         global:
-        - entries:
-          - user: ${JENKINS_ADMIN_ID}
-          name: "Administrators"
-          pattern: ".*"
-          permissions:
-          - "Overall/Administer"
+          - entries:
+              - user: ${JENKINS_ADMIN_ID}
+            name: "Administrators"
+            pattern: ".*"
+            permissions:
+              - "Overall/Administer"
   projectNamingStrategy:
     roleBased:
       forceExistingJobs: true
@@ -43,6 +40,28 @@ security:
 unclassified:
   location:
     url: ${JENKINS_URL}
+  thinBackup:
+    backupAdditionalFiles: false
+    backupBuildArchive: false
+    backupBuildResults: true
+    backupBuildsToKeepOnly: false
+    backupConfigHistory: false
+    backupNextBuildNumber: false
+    backupPath: "/jenkins_backup"
+    backupPluginArchives: false
+    backupUserContents: false
+    cleanupDiff: false
+    diffBackupSchedule: "H 18 * * 1-5"
+    failFast: true
+    forceQuietModeTimeout: 120
+    fullBackupSchedule: "H 23 * * 1-5"
+    moveOldBackupsToZipFile: true
+    nrMaxStoredFull: 12
+    waitForIdle: true
+  globalTimeOutConfiguration:
+    operations:
+      - "abortOperation"
+    overwriteable: false
   scheduleBuild:
     defaultScheduleTime: "10:00:00 PM"
     timeZone: "Asia/Saigon"

@@ -4,17 +4,17 @@
 
 1. Clone this repository to internal
 
-	By SSH
+    By SSH
 
-	```shell
-	git clone git@github.com:hoangbeard/docker-in-jenkins-docker.git
-	```
+    ```shell
+    git clone git@github.com:hoangbeard/docker-in-jenkins-docker.git
+    ```
 
-	Or by HTTPS
+    Or by HTTPS
 
-	```shell
-	git clone https://github.com/hoangbeard/docker-in-jenkins-docker.git
-	```
+    ```shell
+    git clone https://github.com/hoangbeard/docker-in-jenkins-docker.git
+    ```
 
 2. Create an environment variables file for docker-compose by renaming .env.sample to .env in the root folder. Modify the username and password that you want.
 
@@ -30,11 +30,14 @@
 
 4. Access to Jenkins console
 
-    http://localhost:8080
+    <http://localhost:8080>
 
-        Default credential in .env
-        Username: admin
-        Password: password
+    Default credential in .env:
+    
+    ```
+    Username: admin
+    Password: password
+    ```
 
 ## How to clean up?
 

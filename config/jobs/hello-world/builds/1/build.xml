@@ -1,0 +1,181 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@1506.v77f78a_b_8cc5e">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>admin</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <io.jenkins.plugins.opentelemetry.job.MonitoringAction plugin="opentelemetry@3.1495.v64dcff5b_7a_6c">
+      <traceId>b27b3bcd7385dcfb4268200314997681</traceId>
+      <spanId>708cb5197fc5df84</spanId>
+      <spanName>BUILD hello-world</spanName>
+      <w3cTraceContext>
+        <entry>
+          <string>traceparent</string>
+          <string>00-b27b3bcd7385dcfb4268200314997681-708cb5197fc5df84-01</string>
+        </entry>
+      </w3cTraceContext>
+      <rootSpanName>BUILD hello-world</rootSpanName>
+      <rootContext class="java.util.Collections$UnmodifiableMap">
+        <m reference="../../w3cTraceContext"/>
+      </rootContext>
+    </io.jenkins.plugins.opentelemetry.job.MonitoringAction>
+    <io.jenkins.plugins.opentelemetry.job.action.RunPhaseMonitoringAction plugin="opentelemetry@3.1495.v64dcff5b_7a_6c">
+      <traceId>b27b3bcd7385dcfb4268200314997681</traceId>
+      <spanId>2434454073acc934</spanId>
+      <spanName>Phase: Start</spanName>
+      <w3cTraceContext>
+        <entry>
+          <string>traceparent</string>
+          <string>00-b27b3bcd7385dcfb4268200314997681-2434454073acc934-01</string>
+        </entry>
+      </w3cTraceContext>
+    </io.jenkins.plugins.opentelemetry.job.action.RunPhaseMonitoringAction>
+    <io.jenkins.plugins.opentelemetry.job.action.RunPhaseMonitoringAction plugin="opentelemetry@3.1495.v64dcff5b_7a_6c">
+      <traceId>b27b3bcd7385dcfb4268200314997681</traceId>
+      <spanId>9ef49bf8774a140b</spanId>
+      <spanName>Phase: Run</spanName>
+      <w3cTraceContext>
+        <entry>
+          <string>traceparent</string>
+          <string>00-b27b3bcd7385dcfb4268200314997681-9ef49bf8774a140b-01</string>
+        </entry>
+      </w3cTraceContext>
+    </io.jenkins.plugins.opentelemetry.job.action.RunPhaseMonitoringAction>
+    <jenkins.metrics.impl.TimeInQueueAction plugin="metrics@4.2.21-464.vc9fa_a_0d6265d">
+      <queuingDurationMillis>63</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>0</buildableDurationMillis>
+      <waitingDurationMillis>38</waitingDurationMillis>
+    </jenkins.metrics.impl.TimeInQueueAction>
+    <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="pipeline-groovy-lib@752.vdddedf804e72">
+      <libraries/>
+    </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction plugin="pipeline-model-definition@2.2247.va_423189a_7dff">
+      <stagesUUID>f8848f2e-860d-4b44-9499-674a0c1b2955</stagesUUID>
+      <pipelineDefs>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef plugin="pipeline-model-api@2.2247.va_423189a_7dff">
+          <stages>
+            <stages>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+                <name>Hello</name>
+                <branches>
+                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                    <name>default</name>
+                    <steps>
+                      <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                        <name>echo</name>
+                        <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                          <arguments class="linked-hash-map">
+                            <entry>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                <key>message</key>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                                <value class="string">Hello World</value>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                            </entry>
+                          </arguments>
+                        </args>
+                      </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                    </steps>
+                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                </branches>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+            </stages>
+            <uuid>f8848f2e-860d-4b44-9499-674a0c1b2955</uuid>
+          </stages>
+          <agent>
+            <agentType>
+              <key>any</key>
+            </agentType>
+          </agent>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef>
+      </pipelineDefs>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction>
+    <jenkins.metrics.impl.SubTaskTimeInQueueAction plugin="metrics@4.2.21-464.vc9fa_a_0d6265d">
+      <queuingDurationMillis>13</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>11</buildableDurationMillis>
+      <waitingDurationMillis>0</waitingDurationMillis>
+      <executingDurationMillis>651</executingDurationMillis>
+      <workUnitCount>1</workUnitCount>
+    </jenkins.metrics.impl.SubTaskTimeInQueueAction>
+    <io.jenkins.plugins.opentelemetry.job.action.RunPhaseMonitoringAction plugin="opentelemetry@3.1495.v64dcff5b_7a_6c">
+      <traceId>b27b3bcd7385dcfb4268200314997681</traceId>
+      <spanId>32ed10cceabd278e</spanId>
+      <spanName>Phase: Finalise</spanName>
+      <w3cTraceContext>
+        <entry>
+          <string>traceparent</string>
+          <string>00-b27b3bcd7385dcfb4268200314997681-32ed10cceabd278e-01</string>
+        </entry>
+      </w3cTraceContext>
+    </io.jenkins.plugins.opentelemetry.job.action.RunPhaseMonitoringAction>
+  </actions>
+  <queueId>1</queueId>
+  <timestamp>1742983251788</timestamp>
+  <startTime>1742983251807</startTime>
+  <result>SUCCESS</result>
+  <duration>3642</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>SUCCESS</result>
+    <script>pipeline {
+    agent any
+
+    stages {
+        stage(&apos;Hello&apos;) {
+            steps {
+                echo &apos;Hello World&apos;
+            }
+        }
+    }
+}
+</script>
+    <loadedScripts class="linked-hash-map"/>
+    <durabilityHint>MAX_SURVIVABILITY</durabilityHint>
+    <timings class="map">
+      <entry>
+        <string>flowNode</string>
+        <long>170935184</long>
+      </entry>
+      <entry>
+        <string>classLoad</string>
+        <long>3150433490</long>
+      </entry>
+      <entry>
+        <string>runQueue</string>
+        <long>1298846215</long>
+      </entry>
+      <entry>
+        <string>run</string>
+        <long>2574201382</long>
+      </entry>
+      <entry>
+        <string>parse</string>
+        <long>727008266</long>
+      </entry>
+      <entry>
+        <string>saveProgram</string>
+        <long>396925804</long>
+      </entry>
+    </timings>
+    <internalCalls class="sorted-set"/>
+    <sandbox>true</sandbox>
+    <iota>12</iota>
+    <head>1:12</head>
+    <done>true</done>
+    <resumeBlocked>false</resumeBlocked>
+    <storageDir>workflow-completed</storageDir>
+  </execution>
+  <completed>true</completed>
+  <checkouts class="hudson.util.PersistedList"/>
+</flow-build>

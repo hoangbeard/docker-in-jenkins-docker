@@ -6,7 +6,6 @@ pipeline-build-step:latest
 pipeline-utility-steps:latest
 dashboard-view:latest
 configuration-as-code:latest
-blueocean:latest
 extended-read-permission:latest
 build-timeout:latest
 schedule-build:latest
@@ -25,7 +24,7 @@ git:latest
 ansicolor:latest
 theme-manager:latest
 dark-theme:latest
+thinBackup:latest
 cloudbees-folder:latest
 cloudbees-disk-usage-simple:latest
-opentelemetry:latest
 sonar:latest

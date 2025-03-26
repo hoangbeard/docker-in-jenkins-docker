@@ -1,4 +1,5 @@
 jenkins_home/
+jenkins_backup/
 grafana/data/
 prometheus/data/
 sonarqube/data/
