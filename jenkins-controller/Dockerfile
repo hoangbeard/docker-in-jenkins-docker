@@ -16,12 +16,23 @@ RUN set -eux; \
     apt-get update; \
     apt-get install -y \
         apt-transport-https \
+        apt-utils \
         ca-certificates \
         curl \
-        gnupg \
+        debian-archive-keyring \
+        dnsutils \
+        inetutils-ping \
+        inetutils-telnet \
         lsb-release \
-        software-properties-common \
+        lsof \
+        maven \
+        net-tools \
+        openssh-client \
+        openssl \
+        procps \
         time \
+        unzip \
+        wget \
     ; \
     echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
@@ -42,5 +53,7 @@ RUN set -eux; \
 COPY config/. /usr/share/jenkins/ref/
 
 RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+
+WORKDIR /var/jenkins_home
 
 USER jenkins

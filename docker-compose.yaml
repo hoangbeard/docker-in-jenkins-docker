@@ -1,7 +1,7 @@
 services:
   jenkins:
     build:
-      context: .
+      context: ./jenkins-controller
       dockerfile: Dockerfile
     container_name: jenkins
     hostname: jenkins-container
@@ -12,115 +12,137 @@ services:
       - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
     restart: unless-stopped
     privileged: true
-    user: '1000'
+    user: "1000"
     ports:
       - "8080:8080"
       - "50000:50000"
     volumes:
-      - ./jenkins_home:/var/jenkins_home:rw
-      - ./jenkins_backup:/jenkins_backup:rw
+      - ./persistent-data/jenkins/home:/var/jenkins_home:rw
+      - ./persistent-data/jenkins/backup:/jenkins_backup:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - ipv4
 
-  # prometheus:
-  #   container_name: prometheus
-  #   hostname: prometheus-container
-  #   image: prom/prometheus
-  #   restart: unless-stopped
-  #   user: '0'
-  #   links:
-  #     - "jenkins"
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - ./prometheus/configs:/etc/prometheus:ro
-  #     - ./prometheus/data:/prometheus:rw
-  #   command:
-  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  prometheus:
+    container_name: prometheus
+    hostname: prometheus-container
+    image: prom/prometheus
+    restart: unless-stopped
+    user: "0"
+    links:
+      - "jenkins"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus:/etc/prometheus:ro
+      - ./persistent-data/prometheus:/prometheus:rw
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    networks:
+      - ipv4
 
-  # grafana:
-  #   container_name: grafana
-  #   hostname: grafana-container
-  #   image: grafana/grafana
-  #   restart: unless-stopped
-  #   user: '0'
-  #   links:
-  #     - "prometheus"
-  #   environment:
-  #     - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL}
-  #     - GF_INSTALL_PLUGINS=grafana-clock-panel
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./grafana/data:/var/lib/grafana:rw
+  grafana:
+    container_name: grafana
+    hostname: grafana-container
+    image: grafana/grafana
+    restart: unless-stopped
+    user: "0"
+    links:
+      - "prometheus"
+    environment:
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./persistent-data/grafana:/var/lib/grafana:rw
+    networks:
+      - ipv4
 
-  # # Jaeger
-  # jaeger-all-in-one:
-  #   container_name: jaeger
-  #   image: jaegertracing/all-in-one:latest
-  #   restart: always
-  #   ports:
-  #     - "16686:16686"
-  #     - "14268"
-  #     - "14250"
+  # Jaeger
+  jaeger-all-in-one:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    restart: always
+    ports:
+      - "16686:16686"
+      - "14268"
+      - "14250"
+    networks:
+      - ipv4
 
-  # # Zipkin
-  # zipkin-all-in-one:
-  #   container_name: zipkin
-  #   image: openzipkin/zipkin:latest
-  #   environment:
-  #     - JAVA_OPTS=-Xms1024m -Xmx1024m -XX:+ExitOnOutOfMemoryError
-  #   restart: always
-  #   ports:
-  #     - "9411:9411"
+  # Zipkin
+  zipkin-all-in-one:
+    container_name: zipkin
+    image: openzipkin/zipkin:latest
+    environment:
+      - JAVA_OPTS=-Xms256m -Xmx256m -XX:+ExitOnOutOfMemoryError
+    restart: always
+    ports:
+      - "9411:9411"
+    networks:
+      - ipv4
 
-  # # Collector
-  # otel-collector:
-  #   container_name: otel-collector
-  #   image: otel/opentelemetry-collector-contrib:latest
-  #   restart: always
-  #   command: ["--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}"]
-  #   volumes:
-  #     - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
-  #   ports:
-  #     - "1888:1888"   # pprof extension
-  #     - "8888:8888"   # Prometheus metrics exposed by the collector
-  #     - "8889:8889"   # Prometheus exporter metrics
-  #     - "13133:13133" # health_check extension
-  #     - "4317:4317"   # OTLP gRPC receiver
-  #     - "55679:55679" # zpages extension
-  #   depends_on:
-  #     - jaeger-all-in-one
-  #     - zipkin-all-in-one
+  # Collector
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector-contrib:latest
+    restart: always
+    command: ["--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}"]
+    volumes:
+      - ./config/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:rw
+    ports:
+      - "1888:1888" # pprof extension
+      - "8888:8888" # Prometheus metrics exposed by the collector
+      - "8889:8889" # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317" # OTLP gRPC receiver
+      - "55679:55679" # zpages extension
+    depends_on:
+      - jaeger-all-in-one
+      - zipkin-all-in-one
+    networks:
+      - ipv4
 
-  # sonarqube:
-  #   container_name: sonarqube
-  #   image: sonarqube:lts-community
-  #   depends_on:
-  #     - db
-  #   environment:
-  #     SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
-  #     SONAR_JDBC_USERNAME: sonar
-  #     SONAR_JDBC_PASSWORD: sonar
-  #   volumes:
-  #     - ./sonarqube/data:/opt/sonarqube/data:rw
-  #     - ./sonarqube/extensions:/opt/sonarqube/extensions:rw
-  #     - ./sonarqube/logs:/opt/sonarqube/logs:rw
-  #   ports:
-  #     - "9000:9000"
-  # db:
-  #   container_name: sonarqube-db
-  #   image: postgres:12
-  #   environment:
-  #     POSTGRES_USER: sonar
-  #     POSTGRES_PASSWORD: sonar
-  #   volumes:
-  #     - ./sonarqube/postgresql:/var/lib/postgresql:rw
-  #     - ./sonarqube/postgresql/data:/var/lib/postgresql/data:rw
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:lts-community
+    depends_on:
+      - db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - ./persistent-data/sonarqube/data:/opt/sonarqube/data:rw
+      - ./persistent-data/sonarqube/extensions:/opt/sonarqube/extensions:rw
+      - ./persistent-data/sonarqube/logs:/opt/sonarqube/logs:rw
+    ports:
+      - "9000:9000"
+    networks:
+      - ipv4
+  db:
+    container_name: sonarqube-db
+    image: postgres:12
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - ./persistent-data/sonarqube/postgresql:/var/lib/postgresql:rw
+      - ./persistent-data/sonarqube/postgresql/data:/var/lib/postgresql/data:rw
+    networks:
+      - ipv4
 
-# volumes:
-#   jenkins_home:
-#     driver: local
-#     driver_opts:
-#       type: none
-#       device: ${PWD}/jenkins_home
-#       o: bind,uid=1000,gid=1000,mode=0775
+networks:
+  ipv4:
+    driver: bridge
+    enable_ipv6: false
+  dual:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: "192.168.2.0/24"
+          gateway: "192.168.2.1"
+        - subnet: "2001:db8:2::/64"
+          gateway: "2001:db8:2::1"

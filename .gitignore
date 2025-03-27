@@ -1,9 +1,9 @@
-jenkins_home/
-jenkins_backup/
-grafana/data/
-prometheus/data/
-sonarqube/data/
-sonarqube/logs/
-sonarqube/extensions/
-sonarqube/postgresql/data/
+persistent-data/jenkins/home/*
+persistent-data/jenkins/backup/*
+persistent-data/grafana/*
+persistent-data/prometheus/*
+persistent-data/sonarqube/data/*
+persistent-data/sonarqube/logs/*
+persistent-data/sonarqube/extensions/*
+persistent-data/sonarqube/postgresql/data/*
 .env
