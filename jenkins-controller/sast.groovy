@@ -21,11 +21,11 @@ pipeline {
     }
 
     stages {
-        stage('Checkout App Code') {
+        stage('Checkout') {
             steps {
-                logMessage('======== Checkout App Code ========', 'stage')
+                logMessage('======== Checkout ========', 'stage')
                 script {
-                    // Checkout app code
+                    // Checkout
                     logMessage('Get code from git repository', 'step')
                     checkout scmGit(
                         branches: [[name: "*/${params.BRANCH}"]],
@@ -37,32 +37,44 @@ pipeline {
                     logMessage('Get commitID of git repository', 'step')
                     imageTag = sh(script: 'git rev-parse --short=7 HEAD', returnStdout: true).trim()
 
-                    logMessage('Checkout App Code completed', 'info')
+                    logMessage('Checkout completed', 'info')
                     logMessage("Image tag: ${imageTag}", 'info')
                 }
             }
         }
 
-        stage('SonarQube Scanner') {
-            environment {
-                scannerHome = tool 'sonarqube-scanner'
-            }
+        stage('SCA') {
             steps {
-                logMessage('======== SonarQube Scanner ========', 'stage')
                 script {
-                    logMessage("Project Key: ${PROJECT_KEY}", 'info')
-                    withSonarQubeEnv(installationName: 'sonarqube') {
-                        sh "${scannerHome}/bin/sonar-scanner -D'sonar.projectKey=${PROJECT_KEY}' -D'sonar.exclusions=**/*.java'"
-                    }
+                    logMessage ('======== SCA ========', 'stage')
+                    
+                    logMessage('Trivy scanner', 'step')
+                    sh "trivy fs ."
+                    
+                    logMessage('Grype scanner', 'step')
+                    sh "grype . --scope all-layers --by-cve --name app-name"
+                }
+            }
+            post {
+                success {
+                    echo "SCA success."
                 }
             }
         }
 
-        stage("Quality Gate") {
+        stage('SAST') {
+            environment {
+                scannerHome = tool 'sonarqube-scanner'
+            }
             steps {
-                logMessage('======== Quality Gate ========', 'stage')
+                logMessage('======== SAST ========', 'stage')
                 script {
-                    logMessage("Project Key: ${PROJECT_KEY}", 'info')
+                    logMessage('SonarQube Scanner', 'step')
+                    withSonarQubeEnv(installationName: 'sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner -D'sonar.projectKey=${PROJECT_KEY}' -D'sonar.exclusions=**/*.java'"
+                    }
+
+                    logMessage('SonarQube Quality Gate', 'step')
                     timeout(time: 2, unit: 'MINUTES') {
                         waitForQualityGate abortPipeline: true
                     }
@@ -70,19 +82,19 @@ pipeline {
             }
         }
 
-        stage('Dependency-Check') {
-            steps {
-                script {
-                    logMessage ('======== Dependency-Check ========', 'stage')
-                    dependencyCheck additionalArguments: '--format ALL --disableBundleAudit', odcInstallation: 'dependency-check'
-                }
-            }
-            post {
-                success {
-                    dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-                }
-            }
-        }
+        // stage('Container Scanning') {
+        //     steps {
+        //         script {
+        //             logMessage ('======== Container Scanning ========', 'stage')
+                    
+        //             logMessage('Trivy scanner', 'step')
+        //             sh "trivy image ${ECR_URL}:${imageTag}"
+                    
+        //             logMessage('Grype scanner', 'step')
+        //             sh "grype ${ECR_URL}:${imageTag} --scope all-layers --by-cve --name app-name"
+        //         }
+        //     }   
+        // }
     }
 }
 

@@ -10,8 +10,7 @@ ENV CASC_JENKINS_CONFIG='/usr/share/jenkins/ref/jcasc.yaml'
 
 USER root
 
-ADD --chmod=644 https://download.docker.com/linux/debian/gpg /etc/apt/keyrings/docker.asc
-
+# Install dependencies
 RUN set -eux; \
     apt-get update; \
     apt-get install -y \
@@ -34,6 +33,18 @@ RUN set -eux; \
         unzip \
         wget \
     ; \
+    apt-get -y clean; \
+    rm -rf /var/lib/apt/lists/*
+
+ADD --chmod=644 https://download.docker.com/linux/debian/gpg /etc/apt/keyrings/docker.asc
+
+# Install Trivy and Docker CLI
+RUN set -eux; \
+    curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin; \
+    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -; \
+    echo \
+        "deb https://aquasecurity.github.io/trivy-repo/deb "$(lsb_release -sc)" main" | \
+        tee -a /etc/apt/sources.list.d/trivy.list; \
     echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
         $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" | \
@@ -44,6 +55,7 @@ RUN set -eux; \
         docker-ce \
         docker-ce-cli \
         docker-compose-plugin \
+        trivy \
     ; \
     usermod -aG docker jenkins \
     ; \

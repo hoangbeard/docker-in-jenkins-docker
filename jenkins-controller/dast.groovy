@@ -17,84 +17,56 @@ pipeline {
                 name: 'GENERATE_REPORT'
     }
     stages {
-        stage('Pipeline information') {
-                steps {
-                    script {
-                        echo "<--Parameter Initialization-->"
-                        echo """
-                        The current parameters are:
-                            Scan Type: ${params.SCAN_TYPE}
-                            Target: ${params.TARGET}
-                            Generate report: ${params.GENERATE_REPORT}
-                        """
-                    }
-                }
-        }
-
         stage('Setting up OWASP ZAP docker container') {
             steps {
                 script {
-                        echo "Pulling up last OWASP ZAP container --> Start"
-                        sh 'docker pull owasp/zap2docker-stable'
-                        echo "Pulling up last VMS container --> End"
-                        echo "Starting container --> Start"
-                        sh """
-                        docker run -dt --name owasp \
-                        owasp/zap2docker-stable \
-                        /bin/bash
-                        """
+                    logMessage('======== Setting up OWASP ZAP docker container ========', 'stage')
+                    sh """
+                        docker run --rm \
+                            --name zaproxy \
+                            -dt ghcr.io/zaproxy/zaproxy:stable \
+                            /bin/bash
+                        docker exec zaproxy mkdir /zap/wrk
+                    """
                 }
             }
         }
 
-
-        stage('Prepare wrk directory') {
-            when {
-                environment name : 'GENERATE_REPORT', value: 'true'
-            }
+        stage('Scanning target on zaproxy container') {
             steps {
                 script {
-                        sh """
-                            docker exec owasp \
-                            mkdir /zap/wrk
-                        """
-                    }
-                }
-        }
-
-
-        stage('Scanning target on owasp container') {
-            steps {
-                script {
-                    scan_type = "${params.SCAN_TYPE}"
-                    echo "----> scan_type: $scan_type"
-                    target = "${params.TARGET}"
+                    logMessage('======== Scanning target on zap container ========', 'stage')
+                    logMessage('OWASP ZAP Scanner', 'step')
+                    logMessage("scan_type = ${params.SCAN_TYPE}", 'info')
                     if(scan_type == "Baseline"){
                         sh """
-                            docker exec owasp \
+                            docker exec zaproxy \
                             zap-baseline.py \
-                            -t $target \
+                            -t ${params.TARGET} \
                             -x report.xml \
                             -I
                         """
+                        sh "docker cp zaproxy:/zap/wrk/report.xml ${WORKSPACE}/zap-scan-report-$(date +%d-%b-%Y).xml"
                     }
                     else if(scan_type == "APIS"){
                         sh """
-                            docker exec owasp \
+                            docker exec zaproxy \
                             zap-api-scan.py \
-                            -t $target \
+                            -t ${params.TARGET} \
                             -x report.xml \
                             -I
                         """
+                        sh "docker cp zaproxy:/zap/wrk/report.xml ${WORKSPACE}/zap-scan-report-$(date +%d-%b-%Y).xml"
                     }
                     else if(scan_type == "Full"){
                         sh """
-                            docker exec owasp \
+                            docker exec zaproxy \
                             zap-full-scan.py \
-                            -t $target \
+                            -t ${params.TARGET} \
                             -x report.xml \
                             -I
                         """
+                        sh "docker cp zaproxy:/zap/wrk/report.xml ${WORKSPACE}/zap-scan-report-$(date +%d-%b-%Y).xml"
                         //-x report-$(date +%d-%b-%Y).xml
                     }
                     else{
@@ -103,22 +75,11 @@ pipeline {
                 }
             }
         }
-        stage('Copy Report to Workspace'){
-            steps {
-                script {
-                    sh '''
-                        docker cp owasp:/zap/wrk/report.xml ${WORKSPACE}/owasp-scan-report-report.xml
-                    '''
-                }
-            }
-        }
     }
     post {
         always {
-            echo "Removing container"
             sh '''
-                docker stop owasp
-                docker rm owasp
+                docker stop zaproxy
             '''
         }
     }
