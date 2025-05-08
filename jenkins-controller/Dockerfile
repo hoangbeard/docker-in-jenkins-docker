@@ -64,7 +64,7 @@ RUN set -eux; \
 
 COPY config/. /usr/share/jenkins/ref/
 
-RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/compatible-plugins.txt
 
 WORKDIR /var/jenkins_home
 

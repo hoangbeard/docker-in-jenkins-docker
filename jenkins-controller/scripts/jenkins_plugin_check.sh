@@ -2,14 +2,14 @@
 # Enhanced script to check plugin compatibility at build time
 
 # Java version to check against
-JAVA_VERSION="11"  # Replace with your Java version
+JAVA_VERSION="21"  # Replace with your Java version
 
 # Fetch the latest Jenkins LTS version
 echo "Fetching latest Jenkins LTS version..."
 JENKINS_VERSION=$(curl -s https://updates.jenkins.io/stable/latestCore.txt)
 if [ -z "$JENKINS_VERSION" ]; then
   echo "Failed to fetch Jenkins version, falling back to default"
-  JENKINS_VERSION="2.375.4"
+  JENKINS_VERSION="2.479.1"
 fi
 
 echo "Using Jenkins version: $JENKINS_VERSION and Java $JAVA_VERSION"
@@ -56,7 +56,7 @@ else
     --plugin-file plugins.txt \
     --verbose \
     --output plugins-with-versions.txt
-  
+
   echo "📄 Generated plugins-with-versions.txt with compatible plugin versions"
 fi
 
