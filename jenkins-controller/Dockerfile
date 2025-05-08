@@ -1,11 +1,11 @@
 ARG JENKINS_VERSION=""
-ARG JDK_VERSION="17"
+ARG JDK_VERSION="21"
 
 FROM jenkins/jenkins:${JENKINS_VERSION:+${JENKINS_VERSION}-}lts-jdk${JDK_VERSION}
 
 LABEL maintainer="HoangBeard <hoangbeard@gmail.com>"
 
-ENV JAVA_OPTS='-Djenkins.install.runSetupWizard=false'
+ENV JAVA_OPTS='-Djenkins.install.runSetupWizard=false -Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Saigon'
 ENV CASC_JENKINS_CONFIG='/usr/share/jenkins/ref/jcasc.yaml'
 
 USER root
