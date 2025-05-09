@@ -12,7 +12,7 @@ services:
       - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
     restart: unless-stopped
     privileged: true
-    user: "1000"
+    user: "1000:1000"
     ports:
       - "8080:8080"
       - "50000:50000"
@@ -28,7 +28,7 @@ services:
     hostname: prometheus-container
     image: prom/prometheus
     restart: unless-stopped
-    user: "0"
+    user: "65534:65534" # nobody:nogroup
     links:
       - "jenkins"
     ports:
@@ -46,7 +46,7 @@ services:
     hostname: grafana-container
     image: grafana/grafana
     restart: unless-stopped
-    user: "0"
+    user: "472:472" # grafana user
     links:
       - "prometheus"
     environment:
@@ -97,7 +97,7 @@ services:
       - "8889:8889" # Prometheus exporter metrics
       - "13133:13133" # health_check extension
       - "4317:4317" # OTLP gRPC receiver
-      - "55679:55679" # zpages extension
+      # - "55680:55680" # zpages extension (using alternative port)
     depends_on:
       - jaeger-all-in-one
       - zipkin-all-in-one
@@ -107,6 +107,7 @@ services:
   sonarqube:
     container_name: sonarqube
     image: sonarqube:lts-community
+    user: "1000:1000" # sonarqube user
     depends_on:
       - db
     environment:
@@ -123,7 +124,9 @@ services:
       - ipv4
   db:
     container_name: sonarqube-db
-    image: postgres:12
+    image: postgres:15
+    restart: always
+    # user: "999:999" # postgres user
     environment:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar

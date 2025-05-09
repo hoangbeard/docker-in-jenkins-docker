@@ -15,6 +15,22 @@ pipeline {
                 name: 'PROJECT_NAME'        
     }
 
+    options {
+        office365ConnectorWebhooks([[
+            name: 'MS Teams - SysOps - System-Notifications Channel'
+            url: 'https://outlook.office.com/webhook/123456...',
+            startNotification(true)
+            notifySuccess(true)
+            notifyAborted(true)
+            notifyNotBuilt(false)
+            notifyUnstable(false)
+            notifyFailure(true)
+            notifyBackToNormal(false)
+            notifyRepeatedFailure(false)
+            timeout(30000)
+        ]])
+    }
+
     environment {
         GIT_SSH_KEY_ID = 'bitbucket'
         PROJECT_KEY = "${params.PROJECT_NAME}_${params.BRANCH}"

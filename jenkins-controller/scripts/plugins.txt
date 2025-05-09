@@ -1,6 +1,5 @@
 ansicolor
 aws-credentials
-blueocean
 build-timeout
 cloudbees-disk-usage-simple
 cloudbees-folder

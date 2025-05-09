@@ -1,6 +1,5 @@
 ansicolor:1.0.6
 aws-credentials:245.v8a_1b_7c11a_94d
-blueocean:1.27.19
 build-timeout:1.38
 cloudbees-disk-usage-simple:241.v0ea_d9a_a_96ee8
 cloudbees-folder:6.1012.v79a_86a_1ea_c1f
@@ -18,7 +17,7 @@ git:5.7.0
 javax-mail-api:1.6.2-11
 opentelemetry:3.1525.v604f3b_1a_e07b_
 pipeline-build-step:567.vea_ce550ece97
-pipeline-graph-view:514.vc1792344c64f
+pipeline-graph-view:516.vd1d03f6c4a_99
 pipeline-stage-view:2.38
 pipeline-utility-steps:2.19.0
 prometheus:819.v50953a_c560dd

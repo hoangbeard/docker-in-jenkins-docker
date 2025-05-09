@@ -1,13 +1,3 @@
-# Keep these empty folders in the repository with .gitkeep
-!persistent-data/jenkins/home/
-!persistent-data/jenkins/backup/
-!persistent-data/grafana/
-!persistent-data/prometheus/
-!persistent-data/sonarqube/data/
-!persistent-data/sonarqube/logs/
-!persistent-data/sonarqube/extensions/
-!persistent-data/sonarqube/postgresql/
-
 # But ignore their contents
 persistent-data/jenkins/home/*
 persistent-data/jenkins/backup/*
@@ -17,14 +7,4 @@ persistent-data/sonarqube/data/*
 persistent-data/sonarqube/logs/*
 persistent-data/sonarqube/extensions/*
 persistent-data/sonarqube/postgresql/*
-
-# Keep .gitkeep files to preserve empty directories
-!persistent-data/jenkins/home/.gitkeep
-!persistent-data/jenkins/backup/.gitkeep
-!persistent-data/grafana/.gitkeep
-!persistent-data/prometheus/.gitkeep
-!persistent-data/sonarqube/data/.gitkeep
-!persistent-data/sonarqube/logs/.gitkeep
-!persistent-data/sonarqube/extensions/.gitkeep
-!persistent-data/sonarqube/postgresql/.gitkeep
 .env
